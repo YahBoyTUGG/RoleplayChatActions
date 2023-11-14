@@ -1,0 +1,83 @@
+permission: '<dark_gray>[<blue>RPCA<dark_gray>] <white>You don''t have permission for this action!'
+reload: '<dark_gray>[<blue>RPCA<dark_gray>] <white>You have reloaded the plugin!'
+player: '<dark_gray>[<blue>RPCA<dark_gray>] <white>That player isn''t online!'
+console: '<dark_gray>[<blue>RPCA<dark_gray>] <white>You can''t execute this command from console!'
+action: '<dark_gray>[<blue>RPCA<dark_gray>] <white>This action doesn''t exist!'
+list: '<dark_gray>[<blue>RPCA<dark_gray>] <white>The current list of actions is: <blue><actions>'
+
+actions:
+  test:
+    permission: rpca.hehe
+    broadcast:
+      enabled: true
+      public:
+        - '<white><player1> has killed <player2>'
+        - '<red><player1> has killed <player2>'
+        - '<blue><player1> has killed <player2>'
+      self:
+        - '<white><player> has killed themselves'
+        - '<yellow><player> has killed themselves'
+        - '<red><player> has killed themselves'
+    message:
+      self:
+        - '<white>you have killed <player>'
+        - '<pink>you have killed <player>'
+        - '<red>you have killed <player>'
+      target:
+        - '<white><player> has killed you'
+        - '<red><player> has killed you'
+        - '<black><player> has killed you'
+    self: # This gets sent if no player is put as a 2nd argument
+      - '<white>you have killed yourself'
+      - '<red>you have killed yourself'
+      - '<yellow>you have killed yourself'
+  test2:
+    permission: rpca.hehe
+    broadcast:
+      enabled: true
+      public:
+        - '<white><player1> has killed <player2>'
+        - '<red><player1> has killed <player2>'
+        - '<blue><player1> has killed <player2>'
+      self:
+        - '<white><player> has killed themselves'
+        - '<yellow><player> has killed themselves'
+        - '<red><player> has killed themselves'
+    message:
+      self:
+        - '<white>you have killed <player>'
+        - '<pink>you have killed <player>'
+        - '<red>you have killed <player>'
+      target:
+        - '<white><player> has killed you'
+        - '<red><player> has killed you'
+        - '<black><player> has killed you'
+    self: # This gets sent if no player is put as a 2nd argument
+      - '<white>you have killed yourself'
+      - '<red>you have killed yourself'
+      - '<yellow>you have killed yourself'
+  test3:
+    permission: rpca.hehe
+    broadcast:
+      enabled: true
+      public:
+        - '<white><player1> has killed <player2>'
+        - '<red><player1> has killed <player2>'
+        - '<blue><player1> has killed <player2>'
+      self:
+        - '<white><player> has killed themselves'
+        - '<yellow><player> has killed themselves'
+        - '<red><player> has killed themselves'
+    message:
+      self:
+        - '<white>you have killed <player>'
+        - '<pink>you have killed <player>'
+        - '<red>you have killed <player>'
+      target:
+        - '<white><player> has killed you'
+        - '<red><player> has killed you'
+        - '<black><player> has killed you'
+    self: # This gets sent if no player is put as a 2nd argument
+      - '<white>you have killed yourself'
+      - '<red>you have killed yourself'
+      - '<yellow>you have killed yourself'

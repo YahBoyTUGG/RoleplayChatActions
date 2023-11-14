@@ -4,3 +4,11 @@ main: red.tugg.roleplaychatactions.RoleplayChatActions
 api-version: '1.20'
 load: STARTUP
 authors: [tugg]
+softdepend:
+  - SuperVanish
+  - CMI
+commands:
+  rpca:
+    description: yes
+  roleplaychatactions:
+    description: yes

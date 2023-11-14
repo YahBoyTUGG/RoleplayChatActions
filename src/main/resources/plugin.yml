@@ -1,0 +1,6 @@
+name: RoleplayChatActions
+version: '${project.version}'
+main: red.tugg.roleplaychatactions.RoleplayChatActions
+api-version: '1.20'
+load: STARTUP
+authors: [tugg]

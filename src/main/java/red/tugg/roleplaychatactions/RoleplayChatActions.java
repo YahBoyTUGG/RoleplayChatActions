@@ -8,13 +8,6 @@ public final class RoleplayChatActions extends JavaPlugin {
 
     public RoleplayChatActionsCommand roleplayChatActionsCommand;
 
-    /*
-    *
-    * CMI & Vanish support
-    *
-    */
-
-
     @Override
     public void onEnable() {
         saveDefaultConfig();
@@ -22,13 +15,16 @@ public final class RoleplayChatActions extends JavaPlugin {
 
         this.roleplayChatActionsCommand = new RoleplayChatActionsCommand(this);
 
-        getCommand("rpca").setExecutor(this.roleplayChatActionsCommand);
         getCommand("roleplaychatactions").setExecutor(this.roleplayChatActionsCommand);
+        getCommand("rpca").setExecutor(this.roleplayChatActionsCommand);
+        getCommand("ca").setExecutor(this.roleplayChatActionsCommand);
 
-        getCommand("rpca").setTabCompleter(this.roleplayChatActionsCommand);
         getCommand("roleplaychatactions").setTabCompleter(this.roleplayChatActionsCommand);
+        getCommand("rpca").setTabCompleter(this.roleplayChatActionsCommand);
+        getCommand("ca").setTabCompleter(this.roleplayChatActionsCommand);
 
-        Bukkit.getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize("<red>Plugin loaded :>"));
+        Bukkit.getServer().getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize("<bold><dark_gray>[<blue>RPCA<dark_gray>] <reset><white> The plugin has been enabled!"));
+
     }
 
     @Override

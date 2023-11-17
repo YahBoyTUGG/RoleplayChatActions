@@ -1,9 +1,7 @@
 package red.tugg.roleplaychatactions;
 
 import com.Zrips.CMI.CMI;
-import com.google.common.base.Joiner;
 import de.myzelyam.api.vanish.VanishAPI;
-import de.myzelyam.supervanish.SuperVanish;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
@@ -14,10 +12,8 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import red.tugg.roleplaychatactions.RoleplayChatActions;
 
 import java.util.*;
 
@@ -34,9 +30,17 @@ public class RoleplayChatActionsCommand implements CommandExecutor, TabCompleter
         if(command.getName().equalsIgnoreCase("rpca") || command.getName().equalsIgnoreCase("roleplaychatactions")) {
             FileConfiguration config = roleplayChatActions.getConfig();
 
-            if(strings.length == 1 && strings[0].equalsIgnoreCase("reload") ||
-                    strings.length == 1 && strings[0].equalsIgnoreCase("list")) {
-                if(!commandSender.hasPermission("rpca.admin")) {
+            if(strings.length < 1) {
+                List<String> list = config.getStringList("help");
+
+                for(String message : list) {
+                    commandSender.sendMessage(MiniMessage.miniMessage().deserialize(message));
+                }
+                return false;
+            }
+
+            if(strings.length == 1 && strings[0].equalsIgnoreCase("reload")) {
+                if(!commandSender.hasPermission("rpca.reload")) {
                     commandSender.sendMessage(MiniMessage.miniMessage().deserialize(config.getString("permission")));
                     return false;
                 }
@@ -44,10 +48,22 @@ public class RoleplayChatActionsCommand implements CommandExecutor, TabCompleter
                 if(strings[0].equalsIgnoreCase("reload")) {
                     roleplayChatActions.reloadConfig();
                     commandSender.sendMessage(MiniMessage.miniMessage().deserialize(config.getString("reload")));
-                } else if(strings[0].equalsIgnoreCase("list")) {
+                }
+                return true;
+            }
+
+            if(strings.length == 1 && strings[0].equalsIgnoreCase("list")) {
+                if (!commandSender.hasPermission("rpca.list")) {
+                    commandSender.sendMessage(MiniMessage.miniMessage().deserialize(config.getString("permission")));
+                    return false;
+                }
+
+                if (strings[0].equalsIgnoreCase("list")) {
                     ConfigurationSection list = config.getConfigurationSection("actions");
+
                     Set<String> keys = list.getKeys(false);
                     String joinedKeys = String.join(", ", keys);
+
                     commandSender.sendMessage(MiniMessage.miniMessage().deserialize(config.getString("list"),
                             Placeholder.parsed("actions", joinedKeys)));
                 }
@@ -67,14 +83,14 @@ public class RoleplayChatActionsCommand implements CommandExecutor, TabCompleter
                 return false;
             }
 
-            if(!commandSender.hasPermission("actions." + action + ".permission")){
+            if(!commandSender.hasPermission(config.getString("actions." + action + ".permission"))){
                 commandSender.sendMessage(MiniMessage.miniMessage().deserialize(config.getString("permission")));
                 return false;
             }
 
             if(strings.length == 2) {
                 targetPlayer = Bukkit.getPlayerExact(strings[1]);
-                if (targetPlayer == null) {
+                if (targetPlayer == null || isPlayerVanished(targetPlayer)) {
                     commandSender.sendMessage(MiniMessage.miniMessage().deserialize(config.getString("player")));
                     return false;
                 }
@@ -114,32 +130,55 @@ public class RoleplayChatActionsCommand implements CommandExecutor, TabCompleter
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        List<String> completions = new ArrayList<>();
-
         Player player = (Player) commandSender;
 
         if (!player.hasPermission("rpca.admin")) {
+            List<String> completionsPlayer = new ArrayList<>();
+
             if (strings.length == 2 && !strings[0].equalsIgnoreCase("reload")
                     && !strings[0].equalsIgnoreCase("list")) {
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    completions.add(onlinePlayer.getName());
+                    if (!isPlayerVanished(onlinePlayer)) {
+                        completionsPlayer.add(onlinePlayer.getName());
+                    }
                 }
             }
+            return completionsPlayer;
         }
 
-        completions.add("reload");
-        completions.add("list");
+        List<String> completions = new ArrayList<>();
+        ConfigurationSection list = roleplayChatActions.getConfig().getConfigurationSection("actions");
+        Set<String> keys = list.getKeys(false);
+
+        if(strings.length == 1) {
+            completions.add("reload");
+            completions.add("list");
+            completions.addAll(keys);
+        }
+        if (strings.length == 2 && !strings[0].equalsIgnoreCase("reload")
+                && !strings[0].equalsIgnoreCase("list")) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                completions.add(onlinePlayer.getName());
+            }
+        }
         return completions;
     }
 
     public String randomString(String action, String path) {
-        FileConfiguration config = roleplayChatActions.getConfig();
-
-        List<String> messageList = config.getStringList("actions." + action + "." + path);
+        List<String> messageList = roleplayChatActions.getConfig().getStringList("actions." + action + "." + path);
 
         Random random = new Random();
         int randomIndex = random.nextInt(messageList.size());
 
         return messageList.get(randomIndex);
+    }
+
+    public boolean isPlayerVanished(Player player) {
+        if (Bukkit.getPluginManager().getPlugin("CMI") != null) {
+            return CMI.getInstance().getPlayerManager().getUser(player).isVanished();
+        } else if (Bukkit.getPluginManager().getPlugin("SuperVanish") != null) {
+            return VanishAPI.isInvisible(player);
+        }
+        return false;
     }
 }

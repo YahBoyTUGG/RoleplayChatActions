@@ -11,7 +11,8 @@
 #     Current list of permissions:
 #       1. rpca.reload - Permission node for the reload command
 #       2. rpca.list - Permission node for the list command
-#       3. Individual permissions for every action is below
+#       3. rpca.admin - Permission node for admin tab completions
+#       4. Individual permissions for every action is below
 #
 #     The plugins messages use the MiniMessage formatting
 #     Normal color codes won't work so keep that in mind
